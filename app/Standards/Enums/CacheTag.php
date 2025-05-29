@@ -17,4 +17,10 @@ enum CacheTag: string
     case CARTS = 'CARTS';
 
     case ORDERS = 'ORDERS';
+
+    case ORDER_PRODUCTS = 'ORDER_PRODUCTS';
+
+    case PAYMENT_ADDRESSES = 'PAYMENTS';
+
+    case SHIPPING_ADDRESSES = 'SHIPPING';
 }
