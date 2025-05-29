@@ -1,0 +1,55 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: e_com
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - postgres
+        networks:
+            - laravel
+
+    nginx:
+        image: nginx:alpine
+        container_name: e_com_nginx
+        ports:
+            - "8000:80"
+        volumes:
+            - .:/var/www/html
+            - ./nginx.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - app
+        networks:
+            - laravel
+
+    postgres:
+        image: postgres:17
+        container_name: e_com_postgres
+        restart: always
+        environment:
+            POSTGRES_DB: laravel
+            POSTGRES_USER: laravel
+            POSTGRES_PASSWORD: secret
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+        networks:
+            - laravel
+
+    redis:
+        image: redis:alpine
+        container_name: e_com_redis
+        ports:
+            - "6379:6379"
+        networks:
+            - laravel
+
+networks:
+    laravel:
+        driver: bridge
+
+volumes:
+    pgdata:
