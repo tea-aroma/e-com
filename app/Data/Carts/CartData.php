@@ -3,7 +3,10 @@
 namespace App\Data\Carts;
 
 
+use App\Data\CartProducts\CartProductData;
+use App\Data\Users\UserData;
 use App\Standards\Data\Abstracts\Data;
+use Illuminate\Support\Collection;
 
 
 /**
@@ -35,4 +38,20 @@ class CartData extends Data
      * @var string
      */
     public string $updated_at;
+
+    /**
+     * @return UserData
+     */
+    public function user(): UserData
+    {
+        return UserData::fromModel($this->model->user);
+    }
+
+    /**
+     * @return Collection<CartProductData>
+     */
+    public function products(): Collection
+    {
+        return UserData::map($this->model->products);
+    }
 }

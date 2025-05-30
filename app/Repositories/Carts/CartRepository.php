@@ -12,16 +12,18 @@ use App\Standards\Enums\CacheTag;
 use App\Standards\Enums\ErrorMessage;
 use App\Standards\Repositories\Abstracts\Repository;
 use App\Standards\Repositories\Interfaces\FindInterface;
+use App\Standards\Repositories\Interfaces\FindOrCreateInterface;
 use App\Standards\Repositories\Interfaces\ReadInterface;
 use App\Standards\Repositories\Interfaces\UpdateInterface;
 use App\Standards\Repositories\Interfaces\WriteInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 
 /**
  * @inheritDoc
  */
-class CartRepository extends Repository implements ReadInterface, FindInterface, WriteInterface, UpdateInterface
+class CartRepository extends Repository implements ReadInterface, FindInterface, WriteInterface, UpdateInterface, FindOrCreateInterface
 {
     /**
      * @var string|null
@@ -106,5 +108,25 @@ class CartRepository extends Repository implements ReadInterface, FindInterface,
         $this->cacheRepository->flush();
 
         return $this->model->newQuery()->where('id', '=', $values->id)->update($values->toArray());
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @param AttributesInterface $attributes
+     * @param AttributesInterface $values
+     *
+     * @return Model
+     */
+    public function findOrCreate(AttributesInterface $attributes, AttributesInterface $values): Model
+    {
+        if (!is_a($values, CartDataAttributes::class) || !is_a($attributes, CartDataAttributes::class))
+        {
+            throw new \LogicException(ErrorMessage::INVALID_ATTRIBUTES->format($values::class, CartDataAttributes::class));
+        }
+
+        $this->cacheRepository->flush();
+
+        return $this->model->newQuery()->firstOrCreate($attributes->toArray(), $values->toArray());
     }
 }

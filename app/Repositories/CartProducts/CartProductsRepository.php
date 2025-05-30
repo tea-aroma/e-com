@@ -48,9 +48,24 @@ class CartProductsRepository extends Repository implements ReadInterface, FindIn
             throw new \LogicException(ErrorMessage::INVALID_OPTIONS->format($options::class, CartProductDataOptions::class));
         }
 
+        $this->cacheRepository->flush();
+
         return $this->cacheRepository->remember($options->toSha512(), function () use ($options)
         {
-            return $this->model->newQuery()->get();
+            $builder = $this->model->newQuery();
+
+            if (isset($options->cart_id))
+            {
+                $builder = $builder->where('cart_id', $options->cart_id);
+            }
+
+            $builder = $builder->with('product');
+
+            $order = explode('|', $options->order);
+
+            $builder->orderBy($order[ 0 ], $order[ 1 ]);
+
+            return $builder->get();
         });
     }
 
