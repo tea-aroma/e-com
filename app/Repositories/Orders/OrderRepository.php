@@ -12,15 +12,17 @@ use App\Standards\Data\Interfaces\OptionsInterface;
 use App\Standards\Enums\CacheTag;
 use App\Standards\Enums\ErrorMessage;
 use App\Standards\Repositories\Abstracts\Repository;
+use App\Standards\Repositories\Interfaces\FindInterface;
 use App\Standards\Repositories\Interfaces\ReadInterface;
 use App\Standards\Repositories\Interfaces\WriteInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 
 /**
  * @inheritDoc
  */
-class OrderRepository extends Repository implements ReadInterface, WriteInterface
+class OrderRepository extends Repository implements ReadInterface, FindInterface, WriteInterface
 {
     /**
      * @var string|null
@@ -50,7 +52,33 @@ class OrderRepository extends Repository implements ReadInterface, WriteInterfac
 
         return $this->cacheRepository->remember($options->toSha512(), function () use ($options)
         {
-            return $this->model->newQuery()->get();
+            $builder = $this->model->newQuery();
+
+            $order = explode('|', $options->order);
+
+            $builder->orderBy($order[ 0 ], $order[ 1 ]);
+
+            if (isset($options->payment_status_id))
+            {
+                $builder->where('payment_status_id', '=', $options->payment_status_id);
+            }
+
+            return $builder->get();
+        });
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @param int $id
+     *
+     * @return Order|null
+     */
+    public function find(int $id): ?Order
+    {
+        return $this->cacheRepository->remember($id, function () use ($id)
+        {
+            return $this->model->newQuery()->find($id);
         });
     }
 

@@ -9,4 +9,10 @@ use App\Standards\Data\Interfaces\OptionsInterface;
 /**
  * @inheritDoc
  */
-class OrderDataOptions extends OrderData implements OptionsInterface {}
+class OrderDataOptions extends OrderData implements OptionsInterface
+{
+    /**
+     * @var string
+     */
+    public string $order = 'id|desc';
+}

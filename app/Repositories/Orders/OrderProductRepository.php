@@ -49,7 +49,13 @@ class OrderProductRepository extends Repository implements ReadInterface, WriteI
 
         return $this->cacheRepository->remember($options->toSha512(), function () use ($options)
         {
-            return $this->model->newQuery()->get();
+            $builder = $this->model->newQuery();
+
+            $order = explode('|', $options->order);
+
+            $builder->orderBy($order[ 0 ], $order[ 1 ]);
+
+            return $builder->get();
         });
     }
 
