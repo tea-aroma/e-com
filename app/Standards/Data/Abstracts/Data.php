@@ -90,7 +90,7 @@ abstract class Data
 
         foreach ((new \ReflectionClass($this))->getProperties() as $property)
         {
-            if (!$property->isInitialized($this))
+            if (!$property->isInitialized($this) || $property->isProtected())
             {
                 continue;
             }

@@ -39,7 +39,7 @@ class ApiResponse
     {
         foreach ($array as $key => $value)
         {
-            if (empty($value))
+            if (is_null($value))
             {
                 continue;
             }
@@ -114,6 +114,6 @@ class ApiResponse
      */
     public static function fromArray(array $array): JsonResponse
     {
-        return (new static($array))->toJsonResponse($array);
+        return (new static($array))->toJsonResponse();
     }
 }
