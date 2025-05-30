@@ -14,6 +14,8 @@ enum SettingKey: string
 {
     case DEFAULT_PAYMENT_STATUS_ID = 'default_payment_status_id';
 
+    case COMPLETED_PAYMENT_STATUS_ID = 'completed_payment_status_id';
+
     case EXPIRED_PAYMENT_STATUS_ID = 'expired_payment_status_id';
 
     case EXPIRED_PAYMENT_STATUS_TIME = 'expired_payment_status_time';

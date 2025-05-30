@@ -23,6 +23,7 @@ class SettingSeeder extends Seeder
     {
         return [
             [ 'key' => 'default_payment_status_id', 'value' => '1' ],
+            [ 'key' => 'completed_payment_status_id', 'value' => '2' ],
             [ 'key' => 'expired_payment_status_id', 'value' => '3' ],
             [ 'key' => 'expired_payment_status_time', 'value' => '120' ],
             [ 'key' => 'default_shipping_status_id', 'value' => '1' ],
