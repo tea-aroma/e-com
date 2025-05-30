@@ -20,6 +20,8 @@ return new class extends Migration
             $table->decimal('price', 10)->default(0);
             $table->integer('quantity')->default(0);
             $table->timestamps();
+
+            $table->unique(['order_id', 'product_id']);
         });
     }
 
