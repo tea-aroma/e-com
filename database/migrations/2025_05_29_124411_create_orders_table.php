@@ -16,8 +16,6 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->nullOnDelete();
             $table->unsignedBigInteger('payment_method_id');
             $table->string('payment_method_name');
-            $table->unsignedBigInteger('payment_status_id');
-            $table->string('payment_status_name');
             $table->unsignedBigInteger('payment_address_id');
             $table->string('payment_address_name');
             $table->unsignedBigInteger('shipping_status_id');

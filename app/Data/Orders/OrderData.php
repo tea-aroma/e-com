@@ -34,16 +34,6 @@ class OrderData extends Data
     /**
      * @var int
      */
-    public int $payment_status_id;
-
-    /**
-     * @var string
-     */
-    public string $payment_status_name;
-
-    /**
-     * @var int
-     */
     public int $payment_address_id;
 
     /**

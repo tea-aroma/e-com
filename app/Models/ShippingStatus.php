@@ -13,7 +13,7 @@ class ShippingStatus extends Model
     /**
      * @var string
      */
-    protected $table = 'brands';
+    protected $table = 'shipping_statuses';
 
     /**
      * @var string[]
