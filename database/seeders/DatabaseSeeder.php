@@ -6,6 +6,8 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,6 +16,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Cache::flush();
+
         $this->call(CategorySeeder::class);
 
         $this->call(BrandSeeder::class);
@@ -25,6 +29,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ShippingMethodSeeder::class);
 
         $this->call(ShippingStatusSeeder::class);
+
+        $this->call(SettingSeeder::class);
     }
 
     /**
