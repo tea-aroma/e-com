@@ -4,10 +4,11 @@ namespace App\Http\Api\Carts;
 
 
 use App\Data\CartProducts\ViewCartProductDataOptions;
-use App\Data\Carts\CartDataAttributes;
+use App\Http\Requests\Api\Carts\CartProductAppendRequest;
+use App\Http\Requests\Api\Carts\CartProductRemoveRequest;
 use App\Repositories\CartProducts\ViewCartProductsRepository;
-use App\Repositories\Carts\CartRepository;
 use App\Standards\ApiResponse\Classes\ApiResponse;
+use App\Standards\Cart\Cart;
 use App\Standards\Enums\ErrorMessage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,11 +29,9 @@ class CartController
     {
         try
         {
-            $values = CartDataAttributes::fromArray(user()->toArray());
+            $cart = new Cart();
 
-            $attributes = CartDataAttributes::fromArray([ 'user_id' => user()->id ]);
-
-            $record = CartRepository::query()->findOrCreate($attributes, $values);
+            $record = $cart->getCart();
         }
         catch (\Exception $e)
         {
@@ -65,5 +64,51 @@ class CartController
         }
 
         return ApiResponse::success($records->toArray(), '');
+    }
+
+    /**
+     * @param CartProductAppendRequest $request
+     *
+     * @return JsonResponse
+     */
+    public function append(CartProductAppendRequest $request): JsonResponse
+    {
+        try
+        {
+            $cart = new Cart();
+
+            $record = $cart->append($request->post('product_id'), $request->post('quantity'));
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage());
+
+            return ApiResponse::error(ErrorMessage::INVALID_DATA->value);
+        }
+
+        return ApiResponse::success($record->toArray(), '');
+    }
+
+    /**
+     * @param CartProductRemoveRequest $request
+     *
+     * @return JsonResponse
+     */
+    public function delete(CartProductRemoveRequest $request): JsonResponse
+    {
+        try
+        {
+            $cart = new Cart();
+
+            $id = $cart->delete($request->post('product_id'));
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage());
+
+            return ApiResponse::error(ErrorMessage::INVALID_DATA->value);
+        }
+
+        return ApiResponse::success([], 'Product successfully removed.');
     }
 }

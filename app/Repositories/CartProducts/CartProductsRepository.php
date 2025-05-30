@@ -11,16 +11,19 @@ use App\Standards\Data\Interfaces\OptionsInterface;
 use App\Standards\Enums\CacheTag;
 use App\Standards\Enums\ErrorMessage;
 use App\Standards\Repositories\Abstracts\Repository;
+use App\Standards\Repositories\Interfaces\DeleteInterface;
 use App\Standards\Repositories\Interfaces\FindInterface;
 use App\Standards\Repositories\Interfaces\ReadInterface;
 use App\Standards\Repositories\Interfaces\WriteInterface;
+use App\Standards\Repositories\Interfaces\WriteOrUpdateInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 
 /**
  * @inheritDoc
  */
-class CartProductsRepository extends Repository implements ReadInterface, FindInterface, WriteInterface
+class CartProductsRepository extends Repository implements ReadInterface, FindInterface, WriteInterface, WriteOrUpdateInterface, DeleteInterface
 {
     /**
      * @var string|null
@@ -80,7 +83,7 @@ class CartProductsRepository extends Repository implements ReadInterface, FindIn
     {
         return $this->cacheRepository->remember($id, function () use ($id)
         {
-            return $this->model->newQuery()->find($id);
+            return $this->model->newQuery()->where('product_id', $id)->first();
         });
     }
 
@@ -101,5 +104,37 @@ class CartProductsRepository extends Repository implements ReadInterface, FindIn
         $this->cacheRepository->flush();
 
         return $this->model->newQuery()->create($values->toArray());
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @param AttributesInterface $attributes
+     * @param AttributesInterface $values
+     *
+     * @return Model
+     */
+    public function writeOrUpdate(AttributesInterface $attributes, AttributesInterface $values): Model
+    {
+        if (!is_a($values, CartProductDataAttributes::class) || !is_a($attributes, CartProductDataAttributes::class))
+        {
+            throw new \LogicException(ErrorMessage::INVALID_ATTRIBUTES->format($values::class, CartProductDataAttributes::class));
+        }
+
+        $this->cacheRepository->flush();
+
+        return $this->model->newQuery()->updateOrCreate($attributes->toArray(), $values->toArray());
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return mixed
+     */
+    public function delete(int $id): mixed
+    {
+        $this->cacheRepository->flush();
+
+        return $this->model->newQuery()->where('product_id', '=', $id)->delete();
     }
 }
