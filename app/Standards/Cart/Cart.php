@@ -5,13 +5,18 @@ namespace App\Standards\Cart;
 
 use App\Data\CartProducts\CartProductData;
 use App\Data\CartProducts\CartProductDataAttributes;
+use App\Data\CartProducts\ViewCartProductData;
+use App\Data\CartProducts\ViewCartProductDataOptions;
 use App\Data\Carts\CartData;
 use App\Data\Carts\CartDataAttributes;
 use App\Data\Orders\OrderData;
 use App\Data\Orders\OrderDataOptions;
+use App\Http\Requests\Payments\PaymentRequest;
 use App\Repositories\CartProducts\CartProductsRepository;
+use App\Repositories\CartProducts\ViewCartProductsRepository;
 use App\Repositories\Carts\CartRepository;
 use App\Repositories\Orders\OrderRepository;
+use App\Standards\Payment\Payment;
 use Illuminate\Support\Collection;
 
 
@@ -55,6 +60,14 @@ class Cart
     }
 
     /**
+     * @return bool
+     */
+    public function clear(): mixed
+    {
+        return CartRepository::query()->delete($this->getCartId());
+    }
+
+    /**
      * @return CartData
      */
     public function getCart(): CartData
@@ -79,6 +92,29 @@ class Cart
     }
 
     /**
+     * @return int
+     */
+    public function getTotal(): int
+    {
+        return $this->getProducts()->reduce(function($accumulator, ViewCartProductData $cartData)
+        {
+            return $accumulator + $cartData->price * $cartData->quantity;
+        }, 0);
+    }
+
+    /**
+     * @return Collection<ViewCartProductData>
+     */
+    public function getProducts(): Collection
+    {
+        $options = new ViewCartProductDataOptions([ 'cart_id' => $this->getCartId(), 'user_id' => user()->id ]);
+
+        $records = ViewCartProductsRepository::query()->records($options);
+
+        return ViewCartProductData::map($records);
+    }
+
+    /**
      * @return bool
      */
     public function isEmpty(): bool
@@ -96,5 +132,21 @@ class Cart
         $records = OrderRepository::query()->records($options);
 
         return OrderData::map($records);
+    }
+
+    /**
+     * @param PaymentRequest $request
+     *
+     * @return string
+     */
+    public function payment(PaymentRequest $request): string
+    {
+        $payment = new Payment($request);
+
+        $payment->execute();
+
+        $this->clear();
+
+        return $payment->getToken();
     }
 }

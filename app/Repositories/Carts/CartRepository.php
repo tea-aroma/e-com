@@ -11,6 +11,7 @@ use App\Standards\Data\Interfaces\OptionsInterface;
 use App\Standards\Enums\CacheTag;
 use App\Standards\Enums\ErrorMessage;
 use App\Standards\Repositories\Abstracts\Repository;
+use App\Standards\Repositories\Interfaces\DeleteInterface;
 use App\Standards\Repositories\Interfaces\FindInterface;
 use App\Standards\Repositories\Interfaces\FindOrCreateInterface;
 use App\Standards\Repositories\Interfaces\ReadInterface;
@@ -23,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @inheritDoc
  */
-class CartRepository extends Repository implements ReadInterface, FindInterface, WriteInterface, UpdateInterface, FindOrCreateInterface
+class CartRepository extends Repository implements ReadInterface, FindInterface, WriteInterface, UpdateInterface, FindOrCreateInterface, DeleteInterface
 {
     /**
      * @var string|null
@@ -128,5 +129,19 @@ class CartRepository extends Repository implements ReadInterface, FindInterface,
         $this->cacheRepository->flush();
 
         return $this->model->newQuery()->firstOrCreate($attributes->toArray(), $values->toArray());
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @param int $id
+     *
+     * @return mixed
+     */
+    public function delete(int $id): mixed
+    {
+        $this->cacheRepository->flush();
+
+        return $this->model->newQuery()->where('id', '=', $id)->delete();
     }
 }
