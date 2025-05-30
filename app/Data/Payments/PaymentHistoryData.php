@@ -14,6 +14,11 @@ class PaymentHistoryData extends Data
     /**
      * @var int
      */
+    public int $id;
+
+    /**
+     * @var int
+     */
     public int $user_id;
 
     /**
@@ -45,4 +50,14 @@ class PaymentHistoryData extends Data
      * @var string
      */
     public string $token;
+
+    /**
+     * @var string
+     */
+    public string $created_at;
+
+    /**
+     * @var string
+     */
+    public string $updated_at;
 }

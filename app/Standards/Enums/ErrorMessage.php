@@ -14,6 +14,8 @@ enum ErrorMessage: string
 
     case INVALID_DATA = 'Invalid data.';
 
+    case CART_EMPTY = 'Cart is empty.';
+
     /**
      * Formats the error message with specified arguments.
      *
