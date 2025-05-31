@@ -5,7 +5,6 @@ namespace App\Repositories\Orders;
 
 use App\Data\Orders\OrderDataAttributes;
 use App\Data\Orders\OrderDataOptions;
-use App\Models\Cart;
 use App\Models\Order;
 use App\Standards\Data\Interfaces\AttributesInterface;
 use App\Standards\Data\Interfaces\OptionsInterface;
@@ -16,7 +15,6 @@ use App\Standards\Repositories\Interfaces\FindInterface;
 use App\Standards\Repositories\Interfaces\ReadInterface;
 use App\Standards\Repositories\Interfaces\WriteInterface;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 
 /**
@@ -34,14 +32,14 @@ class OrderRepository extends Repository implements ReadInterface, FindInterface
      *
      * @var CacheTag
      */
-    protected CacheTag $cacheTag = CacheTag::CARTS;
+    protected CacheTag $cacheTag = CacheTag::ORDERS;
 
     /**
      * @inheritDoc
      *
      * @param OptionsInterface $options
      *
-     * @return Collection<Cart>
+     * @return Collection<Order>
      */
     public function records(OptionsInterface $options): Collection
     {

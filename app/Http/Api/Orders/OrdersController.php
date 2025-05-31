@@ -3,8 +3,8 @@
 namespace App\Http\Api\Orders;
 
 
-use App\Data\Orders\OrderDataOptions;
-use App\Repositories\Orders\OrderRepository;
+use App\Data\Orders\ViewOrderDataOptions;
+use App\Repositories\Orders\ViewOrderRepository;
 use App\Standards\ApiResponse\Classes\ApiResponse;
 use App\Standards\Enums\ErrorMessage;
 use Illuminate\Http\JsonResponse;
@@ -26,7 +26,7 @@ class OrdersController
     {
         try
         {
-            $record = OrderRepository::query()->find($request->get('id'));
+            $record = ViewOrderRepository::query()->find($request->get('id'));
         }
         catch (\Exception $e)
         {
@@ -47,9 +47,9 @@ class OrdersController
     {
         try
         {
-            $options = OrderDataOptions::fromArray([ user()->id ]);
+            $options = ViewOrderDataOptions::fromArray([ user()->id ]);
 
-            $records = OrderRepository::query()->records($options);
+            $records = ViewOrderRepository::query()->records($options);
         }
         catch (\Exception $e)
         {
