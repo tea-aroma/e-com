@@ -30,9 +30,9 @@ class SettingRepository extends Repository implements FindByCodeInterface
      * @param string $code
      * @param string $column
      *
-     * @return Model|null
+     * @return Setting|null
      */
-    public function findByCode(string $code, string $column = 'key'): ?Model
+    public function findByCode(string $code, string $column = 'key'): ?Setting
     {
         return $this->cacheRepository->remember($code . $column, function () use ($code, $column)
         {

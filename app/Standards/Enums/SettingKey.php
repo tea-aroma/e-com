@@ -4,6 +4,7 @@ namespace App\Standards\Enums;
 
 
 use App\Data\Settings\SettingData;
+use App\Models\Setting;
 use App\Repositories\Settings\SettingRepository;
 
 
@@ -18,9 +19,11 @@ enum SettingKey: string
 
     case EXPIRED_PAYMENT_STATUS_ID = 'expired_payment_status_id';
 
-    case EXPIRED_PAYMENT_STATUS_TIME = 'expired_payment_status_time';
+    case EXPIRED_PAYMENT_STATUS_SECONDS = 'expired_payment_status_seconds';
 
     case DEFAULT_SHIPPING_STATUS_ID = 'default_shipping_status_id';
+
+    case CRON_INTERVAL = 'cron_interval';
 
     /**
      * @return SettingData
@@ -28,5 +31,13 @@ enum SettingKey: string
     public function data(): SettingData
     {
         return SettingData::fromModel(SettingRepository::query()->findByCode($this->value));
+    }
+
+    /**
+     * @return Setting|null
+     */
+    public function model(): ?Setting
+    {
+        return SettingRepository::query()->findByCode($this->value);
     }
 }
