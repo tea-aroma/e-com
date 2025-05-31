@@ -11,10 +11,10 @@ if (Schema::hasTable('settings') && \App\Standards\Enums\SettingKey::CRON_INTERV
         ->cron(str_replace('_', ' ', (\App\Standards\Enums\SettingKey::CRON_INTERVAL->data()->value)))
         ->onSuccess(function ()
         {
-            \Illuminate\Support\Facades\Log::info('Successfully updated currencies.');
+            \Illuminate\Support\Facades\Log::info('Successfully updated records.');
         })
         ->onFailure(function ()
         {
-            \Illuminate\Support\Facades\Log::error('Failed to update currencies.');
+            \Illuminate\Support\Facades\Log::error('Failed to update records.');
         });
 }
