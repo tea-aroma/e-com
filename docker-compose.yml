@@ -47,6 +47,18 @@ services:
         networks:
             - laravel
 
+    cron:
+        build:
+            context: ./cron
+            dockerfile: Dockerfile
+        container_name: e_com_cron
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - app
+        networks:
+            - laravel
+
 networks:
     laravel:
         driver: bridge
