@@ -12,8 +12,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $this->down();
-
         DB::statement(<<<PGSQL
 create view v_latest_payment_history as
 select ph.id,
