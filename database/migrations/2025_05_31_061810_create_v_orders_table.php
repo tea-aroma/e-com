@@ -20,8 +20,8 @@ select o.id,
        o.user_id,
        o.payment_method_id,
        o.payment_method_name,
-       ph.new_payment_status_id as payment_status_id,
-       ph.new_payment_status_name as payment_status_name,
+       vlph.new_payment_status_id as payment_status_id,
+       vlph.new_payment_status_name as payment_status_name,
        o.payment_address_id,
        o.payment_address_name,
        o.shipping_status_id,
@@ -36,7 +36,7 @@ select o.id,
        o.created_at,
        o.updated_at
 from orders o
-    left join payment_history ph on ph.id = (select max(ph.id) from payment_history ph where ph.order_id = o.id);
+left join v_latest_payment_history vlph on o.id = vlph.order_id;
 PGSQL
 );
     }
